@@ -103,6 +103,7 @@ const login = async (formEl: FormInstance | undefined) => {
         // localStorage.setItem('token', response.data.data.jwt)
         store.commit('JWT_COMMIT', response.data.data.jwt)
         // console.log('jwt:->', response.data.data.jwt)
+        store.commit('USERNAME', login_from.username)
       })
       router.push('/home')
     } else {

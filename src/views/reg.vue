@@ -51,6 +51,7 @@
 <script lang="ts" setup>
 import {reactive, ref} from 'vue'
 import type {FormInstance, FormRules} from "element-plus";
+import formatDate from '../utils'
 
 const ruleRef = ref<FormInstance>()
 
@@ -110,6 +111,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   await formEl.validate((valid, fields) => {
     if (valid) {
+      reg_form.birthday = formatDate(reg_form.birthday)
       console.log(reg_form)
       console.log('submit!')
     } else {

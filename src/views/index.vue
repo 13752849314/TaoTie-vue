@@ -3,7 +3,7 @@
     <el-row>
       <el-col :span="24">
         <div class="grid-content ep-bg-purple-dark"/>
-        <a href="https://github.com/13752849314/Taotie" style="text-decoration: none"><p>饕餮记账系统</p></a>
+        <a href="https://github.com/13752849314/Taotie-vue" style="text-decoration: none" target="_blank"><p>饕餮记账系统</p></a>
       </el-col>
     </el-row>
 
