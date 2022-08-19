@@ -1,13 +1,13 @@
 <template>
   <el-descriptions
       class="margin-top"
-      title="用户信息"
+      title="用户基本信息"
       :column="3"
       :size="size"
       border
   >
     <template #extra>
-      <el-button type="primary" @click="dialogFormVisible = true">修改信息</el-button>
+      <el-button type="primary" @click="dialogFormVisible = true">修改基本信息</el-button>
     </template>
     <el-descriptions-item>
       <template #label>
@@ -65,7 +65,7 @@
       {{ userInfo.birthday }}
     </el-descriptions-item>
   </el-descriptions>
-  <el-dialog v-model="dialogFormVisible" title="修改信息">
+  <el-dialog v-model="dialogFormVisible" title="修改基本信息">
     <el-form
         :model="re_form"
         label-position="left"
@@ -102,6 +102,7 @@
       </span>
     </template>
   </el-dialog>
+  <RP/>
 </template>
 
 <script setup>
@@ -110,19 +111,22 @@ import request from "../axios"
 import store from "../store/index"
 import {Food, Iphone, Key, MessageBox, User,} from '@element-plus/icons-vue'
 import {ElMessage} from 'element-plus'
-import formatDate from "../utils";
+import formatDate from "../utils"
+import RP from './resetPassword.vue'
 
 console.log(Iphone, MessageBox, Food, Key, User)
-const dialogFormVisible = ref(false)
+let dialogFormVisible = ref(false)
 const userInfo = reactive({
-  username: 'None',
-  phone: '110',
-  email: '110@qq.com',
-  sex: '男',
-  birthday: '1999-06-02'
+  username: store.getters.get_userInfo.username,
+  phone: store.getters.get_userInfo.phone,
+  email: store.getters.get_userInfo.email,
+  sex: store.getters.get_userInfo.sex,
+  birthday: store.getters.get_userInfo.birthday
 })
 
+
 const re_form = reactive({
+  username: '',
   phone: '',
   email: '',
   sex: '',
@@ -167,22 +171,30 @@ const get_userInfo = async () => {
     userInfo.email = response.data.data.userInfo.email
     userInfo.sex = response.data.data.userInfo.sex
     userInfo.birthday = response.data.data.userInfo.birthday
+    re_form.username = userInfo.username
     store.commit('USERINFO', response.data.data.userInfo)
   })
 }
 
 const save = () => {
-  console.log('userInfo', userInfo)
-  console.log('re_form', re_form)
-  console.log(typeof re_form.birthday)
-  console.log(re_form.birthday)
   const is_true = (userInfo.phone === re_form.phone) +
       (userInfo.email === re_form.email) +
       (userInfo.sex === re_form.sex) +
       (userInfo.birthday === formatDate(re_form.birthday))
   if (is_true < 4) {
-    // todo
-    console.log(123)
+    re_form.username = store.getters.get_username
+    re_form.birthday = formatDate(re_form.birthday)
+    const res = request.post(
+        'http://127.0.0.1:5000/user/reset_info',
+        re_form
+    )
+    res.then(response => {
+      userInfo.phone = re_form.phone
+      userInfo.email = re_form.email
+      userInfo.sex = re_form.sex
+      userInfo.birthday = formatDate(re_form.birthday)
+      store.commit('USERINFO', userInfo)
+    })
   } else {
     ElMessage({
       showClose: true,
@@ -192,8 +204,11 @@ const save = () => {
   }
 }
 
-get_userInfo()
-// console.log(store.getters.get_username)
+if (!store.getters.get_userInfo) {
+  get_userInfo()
+}
+
+
 </script>
 
 <style scoped>
@@ -209,4 +224,6 @@ get_userInfo()
 .margin-top {
   margin-top: 20px;
 }
+
+
 </style>

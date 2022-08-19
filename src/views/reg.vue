@@ -52,6 +52,8 @@
 import {reactive, ref} from 'vue'
 import type {FormInstance, FormRules} from "element-plus";
 import formatDate from '../utils'
+import request from '../axios'
+import router from '../router/index'
 
 const ruleRef = ref<FormInstance>()
 
@@ -106,14 +108,20 @@ const resetForm = (formEl: FormInstance | undefined) => {
   formEl.resetFields()
 }
 
-// todo
 const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   await formEl.validate((valid, fields) => {
     if (valid) {
-      reg_form.birthday = formatDate(reg_form.birthday)
-      console.log(reg_form)
       console.log('submit!')
+      reg_form.birthday = formatDate(reg_form.birthday)
+      // console.log(reg_form)
+      const res = request.post(
+          'http://127.0.0.1:5000/register',
+          reg_form
+      )
+      res.then(respone => {
+        router.push('login')
+      })
     } else {
       console.log('error submit!', fields)
     }
