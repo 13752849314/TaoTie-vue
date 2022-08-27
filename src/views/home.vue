@@ -37,13 +37,21 @@
 <script setup>
 import {reactive} from 'vue'
 import Menu from '../components/Menu.vue'
-import store from "../store/index"
+import store from "../store/index.js"
 import request from "../axios.js"
 import router from "../router/index.js"
 
+let name = ''
+
+const onLoad = () => {
+  name = store.getters.get_username
+  console.log(name)
+}
+onLoad()
+
 const userInfo = reactive({
   avatar: 'https://camo.githubusercontent.com/ee0709d1613b7c1453048e628226fa01cb2d58f1b137403fc9338983753ea671/68747470733a2f2f7261772e6769746875622e636f6d2f31333735323834393331342f4d4c2f6d61696e2f696d6167652f68672e706e67',
-  username: ''
+  username: name
 })
 
 const logout = () => {
@@ -53,7 +61,6 @@ const logout = () => {
   })
 }
 
-userInfo.username = store.getters.get_username
 </script>
 
 <style scoped>

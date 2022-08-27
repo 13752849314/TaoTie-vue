@@ -29,12 +29,15 @@
 <script lang="ts" setup>
 import {reactive, ref} from "vue"
 import type {FormInstance, FormRules} from 'element-plus'
+import request from "../axios.js"
+import store from "../store/index.js"
 
 const ruleRef = ref<FormInstance>()
 const re_pw = reactive({
   password: '',
   new_pw: '',
-  new_pw2: ''
+  new_pw2: '',
+  username: store.getters.get_username
 })
 
 function passwordFilter(rule: any, value: any, callback: any) {
@@ -87,8 +90,7 @@ const reset_pw = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   await formEl.validate((valid, fields) => {
     if (valid) {
-      console.log('success!')
-      console.log(re_pw)
+      const res = request.post('http://127.0.0.1:5000/user/resetPW', re_pw)
     } else {
       console.log('error submit!', fields)
     }

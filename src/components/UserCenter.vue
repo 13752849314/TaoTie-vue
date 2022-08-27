@@ -204,10 +204,7 @@ const save = () => {
   }
 }
 
-if (!store.getters.get_userInfo) {
-  get_userInfo()
-}
-
+get_userInfo()
 
 </script>
 
